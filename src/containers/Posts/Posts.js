@@ -1,16 +1,19 @@
 import React, { Component } from "react";
+import {connect} from "react-redux" ;
 
 import { AppContext } from "context/AppContext";
 import Post from "components/Post/Post";
 import PostModal from 'components/PostModal/PostModal';
 import service from "api/service";
 import fbService from "api/fbService";
-import {actionTypes} from "context/actionTypes";
+//import {actionTypes} from "context/actionTypes";
+import {setReduxPosts,getMoreReduxPosts,hasMoreReduxPosts} from "actions/postActions";
 
 import load from "assets/load.gif";
 import noResults from "assets/noResults.jpg";
 
 import './Posts.scss';
+
 
 const limit = 8;
 
@@ -19,8 +22,8 @@ export class Posts extends Component {
   
   state = {
     //posts:null,
-    start:0,
-    hasMore:true,
+    start:this.props.posts ? this.props.posts.length : 0 ,
+    //hasMore:true,
     loading:false,
     isCreateModalOpen:false,
     titleValue:"",
@@ -31,14 +34,14 @@ export class Posts extends Component {
 
   componentDidMount() {
     
-    if(!this.context.state.posts){
+    if(!this.props.posts){
 
-      fbService.getPosts()
+      fbService.postsService.getPosts()
       .then(data => {
-        this.context.dispatch({
-         type:actionTypes.SET_POSTS, payload:{posts:data}
+       // this.context.dispatch({ type:actionTypes.SET_POSTS, payload:{posts:data} })
+       this.props.setReduxPosts(data);
                     
-        })
+        
       })
     }
   }
@@ -68,15 +71,12 @@ export class Posts extends Component {
       body:this.state.bodyValue,
       userId:1
     }
-    fbService.createPost(newPost)
+    fbService.postsService.createPost(newPost)
 
     .then(resJson =>{
-      this.context.dispatch({
-        type:actionTypes.CREATE_POST,
-        payload:{ post:resJson }
-      })
+      
       this.toggleCreateModal();
-
+      this.props.history.push(`/posts/${resJson.id}`)
     })
 
   }
@@ -99,14 +99,14 @@ export class Posts extends Component {
   }
 
   removePost = (id)=>{
-    fbService.removePost(id)
+    const {start} = this.state
+    fbService.postsService.removePost(id)
     .then(() => {
-      const afterDelPosts = this.state.posts.filter(el => {
-        return el.id !== id;
+      fbService.postsService.getPosts(0,start !==0 ? start +limit : limit)
+      .then(res=>{
+        this.props.setReduxPosts(res);
       })
-      this.setState ({
-        posts:afterDelPosts
-      })
+      
         
     })
     .catch(err =>{
@@ -114,6 +114,23 @@ export class Posts extends Component {
     })
 
   }
+
+  // removePost = (id)=>{
+  //   fbService.removePost(id)
+  //   .then(() => {
+  //     const afterDelPosts = this.state.posts.filter(el => {
+  //       return el.id !== id;
+  //     })
+  //     this.setState ({
+  //       posts:afterDelPosts
+  //     })
+        
+  //   })
+  //   .catch(err =>{
+  //     console.log(err);
+  //   })
+
+  // }
   
 
   getMore =()=>{
@@ -122,11 +139,13 @@ export class Posts extends Component {
       start:newStart,
       loading:true
     })
-    fbService.getPosts(newStart,newStart + limit)
+    fbService.postsService.getPosts(newStart,newStart + limit)
       .then(resJson => {
-        this.context.dispatch({type:actionTypes.GET_MORE_POSTS,payload:{posts:resJson}})
+        //this.context.dispatch({type:actionTypes.GET_MORE_POSTS,payload:{posts:resJson}})
+        this.props.hasMoreReduxPosts(resJson.length <limit ? false : true)
+        this.props.getMoreReduxPosts(resJson);
         this.setState({
-          hasMore: resJson.length <limit ? false : true,
+          //hasMore: resJson.length <limit ? false : true,
           loading:false,
         })
       })
@@ -144,8 +163,9 @@ export class Posts extends Component {
 }
 
   render() {
-    const {hasMore,loading,isCreateModalOpen,titleValue,bodyValue} = this.state;
-    const {state:{posts}} = this.context;
+    const {loading,isCreateModalOpen,titleValue,bodyValue} = this.state;
+    //const {state:{posts}} = this.context;
+    const {posts ,hasMore} = this.props;
 
     if(!posts){
       return <div><img src ={load}></img></div>
@@ -171,7 +191,7 @@ export class Posts extends Component {
           }
         
         </div>
-        {hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} className = "app-posts__btn-getMore">GET MORE</button>}</div>}
+        {hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}
 
         <button onClick={this.toggleCreateModal} className = "app-posts__btn__create"> Create Post </button>
         {/* <button onClick={this.updatePost} className = "app-posts__btn__update"> Update Post </button>
@@ -192,7 +212,20 @@ export class Posts extends Component {
   }
 }
 
-export default Posts;
+const mapStateToProps = (state)=>{
+  return {
+    posts:state.postsData.posts,
+    hasMore:state.postsData.hasMore
+  }
+}
+
+const mapDispatchToProps ={
+  setReduxPosts,
+  getMoreReduxPosts,
+  hasMoreReduxPosts
+}
+
+export default connect(mapStateToProps,mapDispatchToProps) (Posts);
 
 
 // {hasMore && <button onClick = {this.getMore} className = "app-posts__btn-getMore" disabled ={loading}>{loading ? "Loading" : "GET MORE"}</button>}
@@ -207,3 +240,5 @@ export default Posts;
     //   .catch(err =>{
     //     console.log(err);
     //   })
+
+    //{hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}

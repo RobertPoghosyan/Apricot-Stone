@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 
-//import postsMockup from 'api/data-mockup';
-//import "./Homepage.scss"
+import "./Homepage.scss";
+
+import apricotStone from "assets/apricotStone.gif";
+import saryan from "assets/saryan.jpg";
+import minas from "assets/minas.jpg";
 
 export class Homepage extends Component {
 
     render() {
         return (
-            <div>
-                Homepage
+            <div className = "app-homepage">
+                <img src ={apricotStone}></img>
+                <span>All about Armenia</span>
+                <img src = {saryan} className = "app-img"></img>
+                <img src = {minas} className = "app-img"></img>
             </div>
         )
     }
 }
 
 export default Homepage;
-
-// PUT data to firebase
-
-// componentDidMount(){
-//     fetch('https://react-network-requests-default-rtdb.firebaseio.com/posts.json',{
-//         method:"PUT",
-//         body:JSON.stringify(postsMockup.map(el => ( {...el, id: el.id-1 } ) ) )
-//     })
-//     .then(res => res.json())
-// }

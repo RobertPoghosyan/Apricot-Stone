@@ -5,6 +5,7 @@ import NavLink from "components/NavLink/NavLink";
 import { AppContext } from "context/AppContext";
 
 import "./Header.scss";
+import logo from "assets/logo.png"
 
 const headerNavLinks = [
   {
@@ -28,6 +29,7 @@ const Header = ()=>{
 
   return (
     <div className="app-header">
+      <img src = {logo} alt = "logo" width = "64px" height = "64px"></img>
         <nav>
           <ul className = "app-header__ul">
             {

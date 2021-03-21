@@ -1,6 +1,6 @@
 class Service {
     constructor() {
-        this.baseUrl = "https://react-network-requests-default-rtdb.firebaseio.com";
+        this.baseUrl = "https://apricot-stone-default-rtdb.firebaseio.com";
     }
 
     _request  = (method,url,data = null)=>{

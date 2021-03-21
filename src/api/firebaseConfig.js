@@ -1,12 +1,14 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyBTN9EvFQb36uVSSnvKGLM249G2AV_LHtQ",
-    authDomain: "react-network-requests.firebaseapp.com",
-    databaseURL: "https://react-network-requests-default-rtdb.firebaseio.com",
-    projectId: "react-network-requests",
-    storageBucket: "react-network-requests.appspot.com",
-    messagingSenderId: "1025449862389",
-    appId: "1:1025449862389:web:bbb9f64805fd6f25d011bc",
-    measurementId: "G-FR8C0PWSVX"
-  };
+import "firebase/database";
 
-  export default firebaseConfig;
+const firebaseConfig = {
+  apiKey: "AIzaSyAhMbc7OEHABE1DnyV5KNjm-8In3Em3yow",
+  authDomain: "apricot-stone.firebaseapp.com",
+  databaseURL: "https://apricot-stone-default-rtdb.firebaseio.com",
+  projectId: "apricot-stone",
+  storageBucket: "apricot-stone.appspot.com",
+  messagingSenderId: "314867540680",
+  appId: "1:314867540680:web:93215828726cc64ec93bfd",
+  measurementId: "G-6RDLRW7DMH"
+};
+
+export default firebaseConfig;
