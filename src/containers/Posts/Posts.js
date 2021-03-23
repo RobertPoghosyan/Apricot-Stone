@@ -1,48 +1,47 @@
 import React, { Component } from "react";
 import {connect} from "react-redux" ;
 
-import { AppContext } from "context/AppContext";
+
 import Post from "components/Post/Post";
 import PostModal from 'components/PostModal/PostModal';
 import service from "api/service";
 import fbService from "api/fbService";
-//import {actionTypes} from "context/actionTypes";
 import {setReduxPosts,getMoreReduxPosts,hasMoreReduxPosts} from "actions/postActions";
 
 import load from "assets/load.gif";
 import noResults from "assets/noResults.jpg";
+import postImg from "assets/postImg.jpg"
 
 import './Posts.scss';
+import Footer from "components/Footer/Footer";
 
 
-const limit = 8;
+const limit = 14;
 
-export class Posts extends Component {
+class Posts extends Component {
 
   
   state = {
-    //posts:null,
     start:this.props.posts ? this.props.posts.length : 0 ,
-    //hasMore:true,
     loading:false,
     isCreateModalOpen:false,
     titleValue:"",
     bodyValue:""
   }
 
-  static contextType = AppContext;
+  
 
   componentDidMount() {
     
     if(!this.props.posts){
-
-      fbService.postsService.getPosts()
-      .then(data => {
-       // this.context.dispatch({ type:actionTypes.SET_POSTS, payload:{posts:data} })
-       this.props.setReduxPosts(data);
+      this.props.setReduxPosts(this.state.start, limit);
+      // fbService.postsService.getPosts()
+      // .then(data => {
+      //  // this.context.dispatch({ type:actionTypes.SET_POSTS, payload:{posts:data} })
+      //  this.props.setReduxPosts(data);
                     
         
-      })
+      // })
     }
   }
   
@@ -74,7 +73,6 @@ export class Posts extends Component {
     fbService.postsService.createPost(newPost)
 
     .then(resJson =>{
-      
       this.toggleCreateModal();
       this.props.history.push(`/posts/${resJson.id}`)
     })
@@ -106,8 +104,6 @@ export class Posts extends Component {
       .then(res=>{
         this.props.setReduxPosts(res);
       })
-      
-        
     })
     .catch(err =>{
       console.log(err);
@@ -115,40 +111,27 @@ export class Posts extends Component {
 
   }
 
-  // removePost = (id)=>{
-  //   fbService.removePost(id)
-  //   .then(() => {
-  //     const afterDelPosts = this.state.posts.filter(el => {
-  //       return el.id !== id;
-  //     })
-  //     this.setState ({
-  //       posts:afterDelPosts
-  //     })
-        
-  //   })
-  //   .catch(err =>{
-  //     console.log(err);
-  //   })
-
-  // }
-  
-
   getMore =()=>{
     const newStart = this.state.start + limit + 1;
     this.setState({
       start:newStart,
       loading:true
     })
-    fbService.postsService.getPosts(newStart,newStart + limit)
-      .then(resJson => {
-        //this.context.dispatch({type:actionTypes.GET_MORE_POSTS,payload:{posts:resJson}})
-        this.props.hasMoreReduxPosts(resJson.length <limit ? false : true)
-        this.props.getMoreReduxPosts(resJson);
-        this.setState({
-          //hasMore: resJson.length <limit ? false : true,
-          loading:false,
-        })
+    // fbService.postsService.getPosts(newStart,newStart + limit)
+    //   .then(resJson => {
+    //     this.props.hasMoreReduxPosts(resJson.length <limit ? false : true)
+    //     this.props.getMoreReduxPosts(resJson);
+    //     this.setState({
+    //       loading:false,
+    //     })
+    //   })
+
+    this.props.getMoreReduxPosts(newStart,newStart + limit)
+    .then(()=>{
+      this.setState({
+        loading:false,
       })
+    })
   }
 
   toggleCreateModal = ()=>{
@@ -177,7 +160,18 @@ export class Posts extends Component {
     
     return (
       <div className = "app-posts">
+        <div className = "app-posts__about">
+          <h1>Interesting Facts About Armenia</h1>
+          <span>Our dear users leave their impressions and knowledge about Armenia on this page.Registr on our site, become a member of our warm family,share your opinion</span>
+        </div>
+        <div className = "app-posts__img">
+          <img src = {postImg}></img>
+        </div>
+        <div className = "app-posts__createBtn">
+          <button onClick={this.toggleCreateModal} className = "app-posts__btn__create"> CREATE POST </button>
+        </div>
         <div className = "app-posts__container">
+          
           {
             posts.map(post =>{
               return <Post 
@@ -191,11 +185,9 @@ export class Posts extends Component {
           }
         
         </div>
-        {hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}
+        {hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">LOAD MORE</button>}</div>}
 
-        <button onClick={this.toggleCreateModal} className = "app-posts__btn__create"> Create Post </button>
-        {/* <button onClick={this.updatePost} className = "app-posts__btn__update"> Update Post </button>
-        <button onClick={()=>this.deletePost(5)} className = "app-posts__btn__delete"> Delete Post </button> */}
+        
         <PostModal
           action = {this.createPost}
           bodyValue = {bodyValue}
@@ -206,6 +198,9 @@ export class Posts extends Component {
           buttonTitle = "Create"
 
         />
+        <div>
+          <Footer/>
+        </div>
 
       </div>
     )
@@ -226,19 +221,3 @@ const mapDispatchToProps ={
 }
 
 export default connect(mapStateToProps,mapDispatchToProps) (Posts);
-
-
-// {hasMore && <button onClick = {this.getMore} className = "app-posts__btn-getMore" disabled ={loading}>{loading ? "Loading" : "GET MORE"}</button>}
-
-// service.getAllPosts()
-    //     .then(resJson => {
-    //         this.setState({
-    //           posts:resJson,
-                
-    //         })
-    //     })
-    //   .catch(err =>{
-    //     console.log(err);
-    //   })
-
-    //{hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}

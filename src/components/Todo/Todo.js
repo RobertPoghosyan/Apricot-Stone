@@ -6,10 +6,10 @@ import Button from "@material-ui/core/Button";
 import { AppContext } from "context/AppContext";
 import Link from "components/Link/Link";
 
-import "./Post.scss";
+import "./Todo.scss";
 
-const Post = ({
-  post,
+const Todo = ({
+  todo,
   className = "",
   isLink = false,
   edit = () => {},
@@ -23,9 +23,9 @@ const Post = ({
   };
 
   const Wrapper = ({ children }) => {
-    const postClassName = `app-post ${className}`;
+    const postClassName = `app-todo ${className}`;
     return isLink ? (
-      <Link className={postClassName} to={`/posts/${post.id}`}>
+      <Link className={postClassName} to={`/todos/${todo.id}`}>
         {context.state.user ? (
           <Button variant="contained" color="primary" onClick={removeHandler}>
             <span className="app-post__edit">Remove</span>
@@ -37,7 +37,7 @@ const Post = ({
       <div className={postClassName}>
         <Button variant="contained" color="primary" onClick={edit}>
           <EditIcon />
-          <span className="app-post__edit">Edit</span>
+          <span className="app-todo__edit">Edit</span>
         </Button>
         {children}
       </div>
@@ -45,16 +45,17 @@ const Post = ({
   };
   return (
     <Wrapper>
-      <span className="app-post__title">{post.title}</span>
-      <span className="app-post__body">{post.body}</span>
+      <span className="app-todo__title">{todo.title}</span>
+      <span className="app-todo__body">{todo.body}</span>
     </Wrapper>
   );
 };
 
-Post.propTypes = {
-  post: PropTypes.exact({
+Todo.propTypes = {
+  todo: PropTypes.exact({
     title: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
+    completed: PropTypes.bool,
     id: PropTypes.number.isRequired,
     userId: PropTypes.number.isRequired,
     isLink: PropTypes.bool,
@@ -64,4 +65,4 @@ Post.propTypes = {
   className: PropTypes.string,
 };
 
-export default Post;
+export default Todo;

@@ -3,21 +3,19 @@ import {connect} from 'react-redux';
 
 
 import { AppContext } from 'context/AppContext';
-import Post from 'components/Post/Post';
+import Todo from 'components/Todo/Todo';
 import PostModal from 'components/PostModal/PostModal';
 import fbService from 'api/fbService';
-import {updatePostInList} from "actions/postActions";
-//import service from 'api/service';
-
-import "./PostDetails.scss";
+import { actionTypes } from 'context/actionTypes';
+import {updateTodoInList} from "actions/todoActions";
+import "./TodosDetails.scss";
 
 import load from "assets/load.gif";
-import { actionTypes } from 'context/actionTypes';
 
-class PostDetails extends Component {
+class TodosDetails extends Component {
 
     state = {
-        post:null,
+        todo:null,
         isEditModalOpen:false,
         titleValue:'',
         bodyValue:''
@@ -26,10 +24,10 @@ class PostDetails extends Component {
     static contextType = AppContext;
 
     componentDidMount (){
-        fbService.postsService.getPost(this.props.match.params.postId)
+        fbService.todoService.getPost(this.props.match.params.todoId)
         .then(resJson => {
             this.setState({
-              post: resJson,
+              todo: resJson,
               titleValue: resJson.title,
               bodyValue:resJson.body , 
             })
@@ -46,22 +44,22 @@ class PostDetails extends Component {
         }))
     }
 
-    savePost = ()=>{
-        fbService.postsService.updatePost({
-            ...this.state.post,
+    saveTodo = ()=>{
+        fbService.todoService.updatePost({
+            ...this.state.todo,
             title:this.state.titleValue,
             body:this.state.bodyValue
         }).then(res=>{
-            const updatedPost = {...this.state.post, title:this.state.titleValue, body:this.state.bodyValue}
+            const updatedTodo = {...this.state.todo, title:this.state.titleValue,body:this.state.bodyValue }
             this.setState({
-                post: updatedPost,
+                todo: updatedTodo,
                 isEditModalOpen: false
             })
-            //const {state:{posts}} = this.context;
-            const {posts} = this.props;
-            if (posts && posts.find(el => el.id ===this.state.post.id)){
-                this.props.updatePostInList(updatedPost)
-                //this.context.dispatch({type:actionTypes.UPDATE_POST, payload:{post:updatedPost}})
+            //const {state:{todos}} = this.context;
+            const {todos} = this.props;
+            if (todos && todos.find(el => el.id ===this.state.todo.id)){
+                this.props.updateTodoInList(updatedTodo)
+                //this.context.dispatch({type:actionTypes.UPDATE_POST, payload:{todo:updatedPost}})
             }
         })
         .catch(err =>{
@@ -79,31 +77,19 @@ class PostDetails extends Component {
         })
     }
 
-    // changeTitle = (e)=>{
-    //     this.setState({
-    //         titleValue:e.target.value
-    //     })
-    // }
-
-    // changeBody = (e)=>{
-    //     this.setState({
-    //         bodyValue:e.target.value
-    //     })
-    // }
-
     render() {
-        const {post,isEditModalOpen,titleValue,bodyValue} = this.state;
-        if(!post){
+        const {todo,isEditModalOpen,titleValue,bodyValue} = this.state;
+        if(!todo){
             return <div><img src ={load}></img></div>
         }
         return (
             <div className = "app-postDetails">
-                <Post
-                    post = {post}
+                <Todo
+                    todo = {todo}
                     edit = {this.toggleCloseModal}
                 />
                 <PostModal
-                    action = {this.savePost}
+                    action = {this.saveTodo}
                     bodyValue = {bodyValue}
                     titleValue = {titleValue}
                     changeValue = {this.changeValue}
@@ -120,12 +106,12 @@ class PostDetails extends Component {
 
 const mapStateToProps = (state) =>{
     return {
-        posts:state.postsData.posts
+        todos:state.todosData.todos
     }
 }
 
 const mapDispatchToProps ={
-    updatePostInList
+    updateTodoInList
 }
 
-export default connect(mapStateToProps,mapDispatchToProps) (PostDetails);
+export default connect(mapStateToProps,mapDispatchToProps) (TodosDetails);
