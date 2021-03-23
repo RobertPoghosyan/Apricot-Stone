@@ -13,11 +13,12 @@
   z-index: 1000;
   font-family: "Raleway";
   &__logo {
-    margin: $layout-margin;
+    flex: 1 1 200px;
+    padding-left: 280px;
   }
   &__ul {
     display: flex;
-    padding-left: 300px;
+    padding-right: 280px;
     li {
       margin: 18px;
     }

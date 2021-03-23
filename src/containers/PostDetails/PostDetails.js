@@ -1,131 +1,115 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
+import Post from "components/Post/Post";
+import PostModal from "components/PostModal/PostModal";
+import fbService from "api/fbService";
+import { updatePostInList } from "actions/postActions";
 
-import { AppContext } from 'context/AppContext';
-import Post from 'components/Post/Post';
-import PostModal from 'components/PostModal/PostModal';
-import fbService from 'api/fbService';
-import {updatePostInList} from "actions/postActions";
-//import service from 'api/service';
+import load from "assets/load.gif";
 
 import "./PostDetails.scss";
 
-import load from "assets/load.gif";
-import { actionTypes } from 'context/actionTypes';
-
 class PostDetails extends Component {
+  state = {
+    post: null,
+    isEditModalOpen: false,
+    titleValue: "",
+    bodyValue: "",
+  };
 
-    state = {
-        post:null,
-        isEditModalOpen:false,
-        titleValue:'',
-        bodyValue:''
-    }
-
-    static contextType = AppContext;
-
-    componentDidMount (){
-        fbService.postsService.getPost(this.props.match.params.postId)
-        .then(resJson => {
-            this.setState({
-              post: resJson,
-              titleValue: resJson.title,
-              bodyValue:resJson.body , 
-            })
-        })
-      .catch(err =>{
-        console.log(err);
-        this.props.history.push('/')
-      })
-    }
-
-    toggleCloseModal = ()=>{
-        this.setState(prevState =>({
-            isEditModalOpen: !prevState.isEditModalOpen
-        }))
-    }
-
-    savePost = ()=>{
-        fbService.postsService.updatePost({
-            ...this.state.post,
-            title:this.state.titleValue,
-            body:this.state.bodyValue
-        }).then(res=>{
-            const updatedPost = {...this.state.post, title:this.state.titleValue, body:this.state.bodyValue}
-            this.setState({
-                post: updatedPost,
-                isEditModalOpen: false
-            })
-            //const {state:{posts}} = this.context;
-            const {posts} = this.props;
-            if (posts && posts.find(el => el.id ===this.state.post.id)){
-                this.props.updatePostInList(updatedPost)
-                //this.context.dispatch({type:actionTypes.UPDATE_POST, payload:{post:updatedPost}})
-            }
-        })
-        .catch(err =>{
-            console.log(err);
-            this.toggleCloseModal();
-        })
-        
-        
-    }
-
-    changeValue = (e)=>{
-        const {name,value} = e.target;
+  componentDidMount() {
+    fbService.postsService
+      .getPost(this.props.match.params.postId)
+      .then((resJson) => {
         this.setState({
-            [name]:value
-        })
-    }
+          post: resJson,
+          titleValue: resJson.title,
+          bodyValue: resJson.body,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.props.history.push("/");
+      });
+  }
 
-    // changeTitle = (e)=>{
-    //     this.setState({
-    //         titleValue:e.target.value
-    //     })
-    // }
+  toggleCloseModal = () => {
+    this.setState((prevState) => ({
+      isEditModalOpen: !prevState.isEditModalOpen,
+    }));
+  };
 
-    // changeBody = (e)=>{
-    //     this.setState({
-    //         bodyValue:e.target.value
-    //     })
-    // }
+  savePost = () => {
+    fbService.postsService
+      .updatePost({
+        ...this.state.post,
+        title: this.state.titleValue,
+        body: this.state.bodyValue,
+      })
+      .then((res) => {
+        const updatedPost = {
+          ...this.state.post,
+          title: this.state.titleValue,
+          body: this.state.bodyValue,
+        };
+        this.setState({
+          post: updatedPost,
+          isEditModalOpen: false,
+        });
 
-    render() {
-        const {post,isEditModalOpen,titleValue,bodyValue} = this.state;
-        if(!post){
-            return <div><img src ={load}></img></div>
+        const { posts } = this.props;
+        if (posts && posts.find((el) => el.id === this.state.post.id)) {
+          this.props.updatePostInList(updatedPost);
         }
-        return (
-            <div className = "app-postDetails">
-                <Post
-                    post = {post}
-                    edit = {this.toggleCloseModal}
-                />
-                <PostModal
-                    action = {this.savePost}
-                    bodyValue = {bodyValue}
-                    titleValue = {titleValue}
-                    changeValue = {this.changeValue}
-                    isOpen = {isEditModalOpen}
-                    onClose = {this.toggleCloseModal}
-                    buttonTitle = "SAVE"
+      })
+      .catch((err) => {
+        console.log(err);
+        this.toggleCloseModal();
+      });
+  };
 
-                />
-                
-            </div>
-        )
+  changeValue = (e) => {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  render() {
+    const { post, isEditModalOpen, titleValue, bodyValue } = this.state;
+    if (!post) {
+      return (
+        <div>
+          <img src={load}></img>
+        </div>
+      );
     }
+    return (
+      <div className="app-postDetails">
+        <Post post={post} edit={this.toggleCloseModal} />
+        <PostModal
+          action={this.savePost}
+          bodyValue={bodyValue}
+          titleValue={titleValue}
+          changeValue={this.changeValue}
+          isOpen={isEditModalOpen}
+          onClose={this.toggleCloseModal}
+          buttonTitle="SAVE"
+        />
+      </div>
+    );
+  }
 }
 
-const mapStateToProps = (state) =>{
-    return {
-        posts:state.postsData.posts
-    }
-}
+const mapStateToProps = (state) => {
+  return {
+    posts: state.postsData.posts,
+  };
+};
 
-const mapDispatchToProps ={
-    updatePostInList
-}
+const mapDispatchToProps = {
+  updatePostInList,
+};
 
-export default connect(mapStateToProps,mapDispatchToProps) (PostDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(PostDetails);

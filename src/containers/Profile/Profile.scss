@@ -1,46 +1,41 @@
 @import "~styles/root";
 
-.app-profile{
-    &__credentials{
+.app-profile {
+  &__credentials {
+    display: flex;
+    align-items: center;
+    margin-top: 80px;
+    padding-bottom: 80px;
+    border-bottom: 0.4px solid #707070;
+    width: 664px;
+  }
+  &__icon {
+    img {
+      width: 100px;
+    }
+  }
 
-        display: flex;
-        align-items: center;
-        //justify-content: center;
-        margin-top: 80px;
-        padding-bottom: 80px;
-        border-bottom: 0.4px solid #707070;
-        width: 664px;
+  &__user {
+    display: block;
+    margin-left: 32px;
+    color: $secondary-color;
+    li {
+      padding: 8px;
     }
-    &__icon{
-        img{
-            width: 100px;
-        }
-    }
+  }
 
-    &__user{
-        display: block;
-        margin-left:32px;
-        color:$secondary-color ;
-        li{
-            padding:8px ;
-        }
+  &__logout {
+    margin-top: 24px;
+    button {
+      width: 160px;
+      height: 48px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 1px solid $secondary-color;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(201, 199, 202, 1);
+      background-color: #fff;
+      color: $secondary-color;
     }
-
-    &__logout{
-        margin-top: 24px;
-        button{
-            width: 160px;
-            height: 48px;
-            font-size: 16px;
-            font-weight: bold;
-            border:1px solid $secondary-color;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(201, 199, 202, 1);
-            background-color: #fff;
-            color: $secondary-color; 
-        }
-    }
-    
+  }
 }
-
-

@@ -6,6 +6,9 @@ import Button from "@material-ui/core/Button";
 import { AppContext } from "context/AppContext";
 import Link from "components/Link/Link";
 
+import like from "assets/like.png";
+import travel from "assets/travel.png";
+
 import "./Todo.scss";
 
 const Todo = ({
@@ -46,7 +49,8 @@ const Todo = ({
   return (
     <Wrapper>
       <span className="app-todo__title">{todo.title}</span>
-      <span className="app-todo__body">{todo.body}</span>
+      <span className="app-todo__body">{todo.body} {todo.completed === true ? <img alt = "like" src = {like} width = "24px" height = "24px"></img>:<img src = {travel} alt ="travel"></img>}</span>
+      
     </Wrapper>
   );
 };

@@ -2,7 +2,7 @@ import { reduxActionTypes } from "./reduxActionTypes";
 
 const initialState = {
   posts: null,
-  hasMore: true,
+  postsHasMore: true,
 };
 const postReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -17,9 +17,10 @@ const postReducer = (state = initialState, action) => {
         posts: [...state.posts, ...action.payload.posts],
       };
     case reduxActionTypes.HAS_MORE_POSTS:
+      console.log(action);
       return {
         ...state,
-        hasMore: action.payload.hasMore,
+        postsHasMore: action.payload.postsHasMore,
       };
     case reduxActionTypes.UPDATE_POST:
       return {

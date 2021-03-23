@@ -11,7 +11,7 @@ const reducers = combineReducers({
 const initialState = {
   postsData: {
     posts: null,
-    hasMore: true,
+    postsHasMore: true,
   },
   todosData: {
     todos: null,
