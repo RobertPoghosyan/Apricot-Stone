@@ -1,10 +1,11 @@
 @import "~styles/root";
 
-.app-post {
+.app-todo {
   padding: 32px;
   border: 1px solid #707070;
   border-radius: 8px;
   align-items: center;
+  text-align: center;
   &:hover {
     background-color: $primary-color;
   }
@@ -12,16 +13,17 @@
     font-family: "Raleway";
     font-size: 24px;
     font-weight: bold;
-    margin-top: 18px;
     padding-bottom: 32px;
     display: block;
     color: $secondary-color;
+    margin-top: 18px;
   }
   &__body {
     font-family: "Raleway";
-    font-size: 16px;
+    font-size: 20px;
     text-indent: 24px;
     color: $secondary-color;
+    text-align: center;
   }
   &__edit {
     padding-left: 10px;

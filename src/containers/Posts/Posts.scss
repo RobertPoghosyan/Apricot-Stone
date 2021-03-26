@@ -6,33 +6,65 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 24px 0;
+
   &__container {
     display: grid;
     grid-template-columns: auto auto auto;
-
     &__post {
-      margin: 12px;
+      margin: 16px;
     }
   }
 
-  &__btn__create {
-    background-color: lightgreen;
-    margin: 10px;
-    padding: 10px;
+  &__about {
+    margin-top: 80px;
+    margin-bottom: 80px;
+    color: $secondary-color;
+    text-align: center;
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+    span {
+      font-size: 16px;
+      color: $secondary-color;
+    }
   }
-  &__btn__update {
-    background-color: yellow;
-    margin: 10px;
-    padding: 10px;
+
+  &__img {
+    margin-bottom: 80px;
+    img {
+      width: 1980px;
+      height: 480px;
+    }
   }
-  &__btn__delete {
-    background-color: red;
-    margin: 10px;
-    padding: 10px;
+
+  &__createBtn {
+    margin-bottom: 80px;
+    button {
+      width: 176px;
+      height: 48px;
+      background-color: $primary-color;
+      color: $secondary-color;
+      font-size: 16px;
+      font-weight: bold;
+      border: 1px solid #cbbd7a;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(201, 199, 202, 1);
+    }
   }
+
   &__btn-getMore {
-    margin: 10px;
-    background-color: rgb(142, 221, 231);
+    width: 160px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid $secondary-color;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(201, 199, 202, 1);
+    background-color: #fff;
+    color: $secondary-color;
+    margin-top: 80px;
   }
 }

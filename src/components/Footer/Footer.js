@@ -4,9 +4,7 @@ import { withRouter } from "react-router-dom";
 import NavLink from "components/NavLink/NavLink";
 import { AppContext } from "context/AppContext";
 
-import logo from "assets/logo.png";
-
-import "./Header.scss";
+import "./Footer.scss";
 
 const headerNavLinks = [
   {
@@ -23,16 +21,13 @@ const headerNavLinks = [
   },
 ];
 
-const Header = () => {
+const Footer = () => {
   const context = useContext(AppContext);
 
   return (
-    <div className="app-header">
-      <div className="app-header__logo">
-        <img src={logo} alt="logo" width="64px" height="64px"></img>
-      </div>
+    <div className="app-footer">
       <nav>
-        <ul className="app-header__ul">
+        <ul className="app-footer__ul">
           {headerNavLinks.map((el) => {
             return (
               <li key={el.title}>
@@ -55,4 +50,4 @@ const Header = () => {
   );
 };
 
-export default withRouter(Header);
+export default withRouter(Footer);

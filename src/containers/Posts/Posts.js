@@ -1,244 +1,187 @@
 import React, { Component } from "react";
-import {connect} from "react-redux" ;
+import { connect } from "react-redux";
 
-import { AppContext } from "context/AppContext";
 import Post from "components/Post/Post";
-import PostModal from 'components/PostModal/PostModal';
-import service from "api/service";
+import Footer from "components/Footer/Footer";
+import PostModal from "components/PostModal/PostModal";
 import fbService from "api/fbService";
-//import {actionTypes} from "context/actionTypes";
-import {setReduxPosts,getMoreReduxPosts,hasMoreReduxPosts} from "actions/postActions";
+import {
+  setReduxPosts,
+  getMoreReduxPosts,
+  hasMoreReduxPosts,
+  postLimit as limit,
+} from "actions/postActions";
 
 import load from "assets/load.gif";
 import noResults from "assets/noResults.jpg";
+import postImg from "assets/postImg.jpg";
 
-import './Posts.scss';
-
-
-const limit = 8;
+import "./Posts.scss";
 
 export class Posts extends Component {
-
-  
   state = {
-    //posts:null,
-    start:this.props.posts ? this.props.posts.length : 0 ,
-    //hasMore:true,
-    loading:false,
-    isCreateModalOpen:false,
-    titleValue:"",
-    bodyValue:""
-  }
-
-  static contextType = AppContext;
+    start: this.props.posts ? this.props.posts.length : 0,
+    loading: false,
+    isCreateModalOpen: false,
+    titleValue: "",
+    bodyValue: "",
+  };
 
   componentDidMount() {
-    
-    if(!this.props.posts){
-
-      fbService.postsService.getPosts()
-      .then(data => {
-       // this.context.dispatch({ type:actionTypes.SET_POSTS, payload:{posts:data} })
-       this.props.setReduxPosts(data);
-                    
-        
-      })
+    if (!this.props.posts) {
+      this.props.setReduxPosts(this.state.start, limit);
     }
   }
-  
 
-  updatePost = ()=>{
-    service.updatePost(5,{title:'Updated Title'})
-    .then(resJson => {
-      const newPosts = this.state.posts.map(el => {
-        if(el.id === resJson.id){
-          return resJson;
-        }
-        return el;
-      })
-
-      this.setState ({
-        posts:newPosts
-      })
-
-    })
-
-  }
-
-  createPost = ()=>{
+  createPost = () => {
     const newPost = {
-      title:this.state.titleValue,
-      body:this.state.bodyValue,
-      userId:1
-    }
-    fbService.postsService.createPost(newPost)
+      title: this.state.titleValue,
+      body: this.state.bodyValue,
+      userId: 1,
+    };
+    fbService.postsService
+      .createPost(newPost)
 
-    .then(resJson =>{
-      
-      this.toggleCreateModal();
-      this.props.history.push(`/posts/${resJson.id}`)
-    })
+      .then((resJson) => {
+        this.toggleCreateModal();
+        this.props.history.push(`/posts/${resJson.id}`);
+      });
+  };
 
-  }
+  removePost = async (id) => {
+    const { start } = this.state;
+    await fbService.postsService.removePost(id);
+    this.props.setReduxPosts(0, start + limit);
+  };
 
-  deletePost = (id)=>{
-    service.deletePost(id)
-    .then(() => {
-      const afterDelPosts = this.state.posts.filter(el => {
-        return el.id !== id;
-      })
-      this.setState ({
-        posts:afterDelPosts
-      })
-        
-    })
-    .catch(err =>{
-      console.log(err);
-    })
-
-  }
-
-  removePost = (id)=>{
-    const {start} = this.state
-    fbService.postsService.removePost(id)
-    .then(() => {
-      fbService.postsService.getPosts(0,start !==0 ? start +limit : limit)
-      .then(res=>{
-        this.props.setReduxPosts(res);
-      })
-      
-        
-    })
-    .catch(err =>{
-      console.log(err);
-    })
-
-  }
-
-  // removePost = (id)=>{
-  //   fbService.removePost(id)
-  //   .then(() => {
-  //     const afterDelPosts = this.state.posts.filter(el => {
-  //       return el.id !== id;
-  //     })
-  //     this.setState ({
-  //       posts:afterDelPosts
-  //     })
-        
-  //   })
-  //   .catch(err =>{
-  //     console.log(err);
-  //   })
-
-  // }
-  
-
-  getMore =()=>{
+  getMore = () => {
     const newStart = this.state.start + limit + 1;
     this.setState({
-      start:newStart,
-      loading:true
-    })
-    fbService.postsService.getPosts(newStart,newStart + limit)
-      .then(resJson => {
-        //this.context.dispatch({type:actionTypes.GET_MORE_POSTS,payload:{posts:resJson}})
-        this.props.hasMoreReduxPosts(resJson.length <limit ? false : true)
-        this.props.getMoreReduxPosts(resJson);
+      start: newStart,
+      loading: true,
+    });
+
+    this.props
+      .getMoreReduxPosts(newStart, limit)
+
+      .then(() => {
         this.setState({
-          //hasMore: resJson.length <limit ? false : true,
-          loading:false,
-        })
-      })
-  }
+          loading: false,
+        });
+      });
+  };
 
-  toggleCreateModal = ()=>{
-    this.setState(prev =>({ isCreateModalOpen : !prev.isCreateModalOpen}))
-  }
+  toggleCreateModal = () => {
+    this.setState((prev) => ({ isCreateModalOpen: !prev.isCreateModalOpen }));
+  };
 
-  changeValue = (e)=>{
-    const {name,value} = e.target;
+  changeValue = (e) => {
+    const { name, value } = e.target;
     this.setState({
-        [name]:value
-    })
-}
+      [name]: value,
+    });
+  };
 
   render() {
-    const {loading,isCreateModalOpen,titleValue,bodyValue} = this.state;
-    //const {state:{posts}} = this.context;
-    const {posts ,hasMore} = this.props;
+    const { loading, isCreateModalOpen, titleValue, bodyValue } = this.state;
 
-    if(!posts){
-      return <div><img src ={load}></img></div>
-    }
+    const { posts, postsHasMore } = this.props;
 
-    if(!(posts.length > 0)){
-      return <div><img src = {noResults}></img>No results</div>
-    }
-    
-    return (
-      <div className = "app-posts">
-        <div className = "app-posts__container">
-          {
-            posts.map(post =>{
-              return <Post 
-                        key = {post.id}
-                        post = {post}
-                        className = "app-posts__container__post"
-                        isLink = {true}
-                        remove = {()=>this.removePost(post.id)}
-                      />
-            })
-          }
-        
+    if (!posts) {
+      return (
+        <div>
+          <img src={load} alt="loading"></img>
         </div>
-        {hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}
+      );
+    }
 
-        <button onClick={this.toggleCreateModal} className = "app-posts__btn__create"> Create Post </button>
-        {/* <button onClick={this.updatePost} className = "app-posts__btn__update"> Update Post </button>
-        <button onClick={()=>this.deletePost(5)} className = "app-posts__btn__delete"> Delete Post </button> */}
+    if (!(posts.length > 0)) {
+      return (
+        <div>
+          <img src={noResults} alt="noResults"></img>No results
+        </div>
+      );
+    }
+
+    return (
+      <div className="app-posts">
+        <div className="app-posts__about">
+          <h1>Interesting Facts About Armenia</h1>
+          <span>
+            Our dear users leave their impressions and knowledge about Armenia
+            on this page.Register on our site, become a member of our warm
+            family,share your opinion
+          </span>
+        </div>
+        <div className="app-posts__img">
+          <img src={postImg} alt="post"></img>
+        </div>
+        <div className="app-posts__createBtn">
+          <button
+            onClick={this.toggleCreateModal}
+            className="app-posts__btn__create"
+          >
+            {" "}
+            CREATE POST{" "}
+          </button>
+        </div>
+        <div className="app-posts__container">
+          {posts.map((post) => {
+            return (
+              <Post
+                key={post.id}
+                post={post}
+                className="app-posts__container__post"
+                isLink={true}
+                remove={() => this.removePost(post.id)}
+              />
+            );
+          })}
+        </div>
+        {postsHasMore && (
+          <div>
+            {loading ? (
+              <img src={load} alt="load"></img>
+            ) : (
+              <button
+                onClick={this.getMore}
+                disabled={loading}
+                className="app-posts__btn-getMore"
+              >
+                LOAD MORE
+              </button>
+            )}
+          </div>
+        )}
+
         <PostModal
-          action = {this.createPost}
-          bodyValue = {bodyValue}
-          titleValue = {titleValue}
-          changeValue = {this.changeValue}
-          isOpen = {isCreateModalOpen}
-          onClose = {this.toggleCreateModal}
-          buttonTitle = "Create"
-
+          action={this.createPost}
+          bodyValue={bodyValue}
+          titleValue={titleValue}
+          changeValue={this.changeValue}
+          isOpen={isCreateModalOpen}
+          onClose={this.toggleCreateModal}
+          buttonTitle="Create"
         />
-
+        <div>
+          <Footer />
+        </div>
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state)=>{
+const mapStateToProps = (state) => {
   return {
-    posts:state.postsData.posts,
-    hasMore:state.postsData.hasMore
-  }
-}
+    posts: state.postsData.posts,
+    postsHasMore: state.postsData.postsHasMore,
+  };
+};
 
-const mapDispatchToProps ={
+const mapDispatchToProps = {
   setReduxPosts,
   getMoreReduxPosts,
-  hasMoreReduxPosts
-}
+  hasMoreReduxPosts,
+};
 
-export default connect(mapStateToProps,mapDispatchToProps) (Posts);
-
-
-// {hasMore && <button onClick = {this.getMore} className = "app-posts__btn-getMore" disabled ={loading}>{loading ? "Loading" : "GET MORE"}</button>}
-
-// service.getAllPosts()
-    //     .then(resJson => {
-    //         this.setState({
-    //           posts:resJson,
-                
-    //         })
-    //     })
-    //   .catch(err =>{
-    //     console.log(err);
-    //   })
-
-    //{hasMore && <div>{loading ? <img src ={load}></img>: <button onClick = {this.getMore} disabled = {loading} className = "app-posts__btn-getMore">GET MORE</button>}</div>}
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);
