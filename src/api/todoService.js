@@ -3,7 +3,7 @@ import "firebase/database";
 
 import firebaseConfig from "./firebaseConfig";
 
-class PostsService {
+class TodoService {
   constructor() {
     if (firebase.apps.length === 0) {
       firebase.initializeApp(firebaseConfig);
@@ -11,7 +11,7 @@ class PostsService {
   }
 
   getAllPosts = async () => {
-    const res = await firebase.database().ref("posts").get();
+    const res = await firebase.database().ref("tours").get();
     const data = res.toJSON();
     return Object.values(data);
   };
@@ -19,7 +19,7 @@ class PostsService {
   getPosts = async (startAt = 0, endAt = 14) => {
     const res = await firebase
       .database()
-      .ref("posts")
+      .ref("tours")
       .orderByKey()
       .startAt(startAt.toString())
       .endAt(endAt.toString())
@@ -30,21 +30,21 @@ class PostsService {
   };
 
   updatePost = async (postData) => {
-    const postRef = firebase.database().ref(`posts/${postData.id}`);
+    const postRef = firebase.database().ref(`tours/${postData.id}`);
     await postRef.update(postData);
     const res = await postRef.get();
     return res.val();
   };
 
   getPost = async (id) => {
-    const res = await firebase.database().ref(`posts/${id}`).get();
+    const res = await firebase.database().ref(`tours/${id}`).get();
     return res.val();
   };
 
   createPost = async (postData) => {
     const res = await firebase
       .database()
-      .ref("posts")
+      .ref("tours")
       .orderByKey()
       .limitToLast(1)
       .get();
@@ -58,22 +58,22 @@ class PostsService {
 
     await firebase
       .database()
-      .ref(`posts/${id + 1}`)
+      .ref(`tours/${id + 1}`)
       .set(newItem);
 
     return newItem;
   };
 
   removePost = async (id) => {
-    const postRef = firebase.database().ref(`posts/${id}`);
+    const postRef = firebase.database().ref(`tours/${id}`);
     await postRef.remove();
 
-    const posts = await this.getAllPosts();
+    const todos = await this.getAllPosts();
     await firebase
       .database()
-      .ref("posts")
+      .ref("tours")
       .set(
-        posts.map((el, idx) => {
+        todos.map((el, idx) => {
           return {
             ...el,
             id: idx,
@@ -83,5 +83,5 @@ class PostsService {
   };
 }
 
-const postsService = new PostsService();
-export default postsService;
+const todoService = new TodoService();
+export default todoService;

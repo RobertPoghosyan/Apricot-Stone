@@ -1,0 +1,18 @@
+@import "~styles/root";
+
+.app-footer {
+  left: 0;
+  width: 100%;
+  height: $footer-size;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Raleway";
+  &__ul {
+    display: flex;
+    li {
+      margin: 18px;
+    }
+  }
+}

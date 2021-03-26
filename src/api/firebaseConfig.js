@@ -8,7 +8,7 @@ const firebaseConfig = {
   storageBucket: "apricot-stone.appspot.com",
   messagingSenderId: "314867540680",
   appId: "1:314867540680:web:93215828726cc64ec93bfd",
-  measurementId: "G-6RDLRW7DMH"
+  measurementId: "G-6RDLRW7DMH",
 };
 
 export default firebaseConfig;

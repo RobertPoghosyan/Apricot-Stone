@@ -1,9 +1,11 @@
 import React, {useContext} from 'react';
+import { useHistory } from 'react-router-dom';
 
 import fbService from 'api/fbService';
 import { AppContext } from 'context/AppContext';
 import {actionTypes} from 'context/actionTypes';
-import { useHistory } from 'react-router-dom';
+
+import user from "assets/user.svg"
 
 import './Profile.scss';
 
@@ -20,7 +22,22 @@ const Profile = () => {
     
     return (
         <div className = "app-profile">
-           <button onClick = {logoutHandler}>Logout</button>
+            <div className = "app-profile__credentials">
+                <div className = "app-profile__icon">
+                    <img src ={user}></img>  
+                </div>
+                <div className = "app-profile__user">
+                    <ul>
+                        <li>Username : <span>Robert</span></li>
+                        <li>E-mail : <span>rob@aa.com</span></li>
+                        <li>Password : <span>Test@123</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div className = "app-profile__logout">
+             <button onClick = {logoutHandler}>Logout</button>
+            </div>
         </div>
     )
 }

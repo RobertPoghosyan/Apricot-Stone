@@ -1,49 +1,154 @@
-.app-signUp{
-    display:inline-block;
-    align-items: center;
-    justify-content: center;
+@import "~styles/root";
 
-    &__rhombus{
-        align-items: center;
-        position: absolute;
-        width: 640px;
-        height: 640px;
-        box-shadow: 1.5rem 1.5rem 1.5rem #ddd;
-        transform: rotate(45deg);
-    }
-    
-    &__form{
-        display: flex;
-        flex-direction: column;
-        z-index: 100;
-        position: fixed;
-    }
+.app-signUp {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  font-family: "Raleway";
+  width: 520px;
+  height: 814px;
+  margin-top: 40px;
 
-    h1{
-        font-size: 32px;
-        font-family: "Roboto";
-        font-weight: bold;
-        color:#456db8;
-        letter-spacing: 4px;
-        margin-bottom: 64px;
-        text-align: center;
-    }
+  &__form {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(201, 199, 202, 1);
+    background-color: #fff;
+    &__btn {
+      margin-bottom: 48px;
 
-    &__input{
-        width: 600px;
-        height: 50px;
-        background-color: #fff;
-        font-size: 16px;
-        padding: 0 2rem;
-        letter-spacing: 0.2rem;
+      &__sign {
+        width: 260px;
+        height: 61px;
         border: none;
-        border-radius: 5rem;
-        box-shadow: 0px 4px 8px rgba(51, 51, 50, 0.342) ;
-        color: #888;
-        margin: 24px;
-        padding: 24px;
-        box-sizing: border-box;
-        outline: none;
-        font-family: "Roboto";
+        background-color: #f0f2f9;
+        border-radius: 8px 0px 0px 0px;
+        color: $secondary-color;
+        font-size: 24px;
+        font-weight: bold;
+        font-family: "Raleway";
+      }
+      &__reg {
+        width: 260px;
+        height: 61px;
+        border: none;
+        border-radius: 0px 8px 0px 0px;
+        background-color: #fff;
+        color: $secondary-color;
+        font-size: 24px;
+        font-weight: bold;
+      }
     }
+    &__checkbox {
+      color: $secondary-color;
+      margin: 24px 40px 40px 40px;
+      label.robot {
+        font-size: 20px;
+        margin-right: 102px;
+        margin-left: 16px;
+      }
+      span.remember {
+        font-size: 20px;
+        margin-left: 16px;
+      }
+    }
+
+    &__submit {
+      width: 440px;
+      height: 48px;
+      background-color: #ffefaa;
+      color: $secondary-color;
+      border: 1px solid #cbbd7a;
+      border-radius: 16px;
+      font-size: 20px;
+      font-family: "Raleway";
+      margin-left: 40px;
+      margin-right: 40px;
+    }
+
+    &__reg {
+      margin: 16px 40px 24px 40px;
+      text-align: right;
+      font-size: 16px;
+      font-style: italic;
+
+      a {
+        color: $secondary-color;
+      }
+    }
+
+    &__social {
+      margin: 0px 40px 40px 40px;
+      h3 {
+        font-family: "Raleway";
+        font-size: 20px;
+        font-weight: bold;
+        color: $secondary-color;
+        margin-bottom: 24px;
+        text-align: left;
+      }
+
+      &__fb {
+        width: 208px;
+        height: 48px;
+        margin-right: 24px;
+        background-color: #ffefaa;
+        color: $secondary-color;
+        border: 1px solid #cbbd7a;
+        border-radius: 16px;
+        font-size: 20px;
+        font-family: "Raleway";
+
+        img {
+          margin-right: 8px;
+          width: 18px;
+          height: 20px;
+        }
+      }
+
+      &__google {
+        width: 208px;
+        height: 48px;
+        background-color: #ffefaa;
+        color: $secondary-color;
+        border: 1px solid #cbbd7a;
+        border-radius: 16px;
+        font-size: 20px;
+        font-family: "Raleway";
+
+        img {
+          margin-right: 8px;
+          width: 18px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
+  span {
+    margin-left: 40px;
+    color: $secondary-color;
+  }
+
+  &__input {
+    width: 440px;
+    height: 48px;
+    background-color: #fff;
+    font-size: 16px;
+    font-family: "Raleway";
+    padding: 16px;
+    letter-spacing: 0.2rem;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0px 0px 8px rgba(201, 199, 202, 1);
+    color: #888;
+    margin: 8px 40px 24px 40px;
+    padding: 24px;
+    outline: none;
+  }
+  input::placeholder {
+    color: #dee4ee;
+  }
 }
